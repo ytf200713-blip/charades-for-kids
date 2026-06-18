@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /print/
+Sitemap: https://www.charadesforkidsprintable.com/sitemap.xml

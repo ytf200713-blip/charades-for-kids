@@ -1,0 +1,42 @@
+[
+  {
+    "id": "kids-charades-starter-pack",
+    "htmlPath": "/Users/tengfeiyang/Documents/需求研究/charades-kids-mvp/site/print/kids-charades-starter-pack.html",
+    "pdfName": "kids-charades-starter-pack.pdf"
+  },
+  {
+    "id": "kids-charades-starter-pack-grayscale",
+    "htmlPath": "/Users/tengfeiyang/Documents/需求研究/charades-kids-mvp/site/print/kids-charades-starter-pack-grayscale.html",
+    "pdfName": "kids-charades-starter-pack-grayscale.pdf"
+  },
+  {
+    "id": "animals",
+    "htmlPath": "/Users/tengfeiyang/Documents/需求研究/charades-kids-mvp/site/print/animals.html",
+    "pdfName": "animals.pdf"
+  },
+  {
+    "id": "actions",
+    "htmlPath": "/Users/tengfeiyang/Documents/需求研究/charades-kids-mvp/site/print/actions.html",
+    "pdfName": "actions.pdf"
+  },
+  {
+    "id": "food",
+    "htmlPath": "/Users/tengfeiyang/Documents/需求研究/charades-kids-mvp/site/print/food.html",
+    "pdfName": "food.pdf"
+  },
+  {
+    "id": "jobs",
+    "htmlPath": "/Users/tengfeiyang/Documents/需求研究/charades-kids-mvp/site/print/jobs.html",
+    "pdfName": "jobs.pdf"
+  },
+  {
+    "id": "sports",
+    "htmlPath": "/Users/tengfeiyang/Documents/需求研究/charades-kids-mvp/site/print/sports.html",
+    "pdfName": "sports.pdf"
+  },
+  {
+    "id": "everyday-objects",
+    "htmlPath": "/Users/tengfeiyang/Documents/需求研究/charades-kids-mvp/site/print/everyday-objects.html",
+    "pdfName": "everyday-objects.pdf"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "name": "charades-kids-printable-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static printable Charades for Kids deck MVP with curated cards and US Letter PDFs.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepare-illustration-sheets": "node scripts/prepare-illustration-sheets.mjs",
+    "crop-illustration-sheets": "node scripts/crop-illustration-sheets.mjs",
+    "compose-vintage-cards": "node scripts/compose-vintage-cards.mjs",
+    "optimize": "node scripts/optimize-site-assets.mjs",
+    "prepare-card-generation": "node scripts/prepare-card-generation.mjs",
+    "normalize-card-batch": "node scripts/normalize-card-batch.mjs",
+    "card-contact-sheet": "node scripts/make-card-contact-sheet.mjs",
+    "validate": "node scripts/validate.mjs",
+    "pdf": "node scripts/render-pdfs.mjs",
+    "verify": "node scripts/verify.mjs",
+    "seo": "node scripts/check-seo.mjs",
+    "all": "node scripts/compose-vintage-cards.mjs && node scripts/optimize-site-assets.mjs && node scripts/build.mjs && node scripts/render-pdfs.mjs && node scripts/verify.mjs && node scripts/check-seo.mjs"
+  }
+}
