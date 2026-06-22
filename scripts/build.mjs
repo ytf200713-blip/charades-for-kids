@@ -20,6 +20,7 @@ const SITE_URL = (process.env.SITE_URL || "https://charades-for-kids.com").repla
 const SITE_TITLE = "Charades for Kids Printable Cards - Free Online Game and PDFs";
 const SITE_DESCRIPTION = "Play charades for kids online or download 144 family-safe printable cards for classrooms, parties, and family game night.";
 const SOCIAL_IMAGE = "og-image.jpg";
+const READY_IMAGE = "assets/cards/charades-ready-scene.jpg";
 const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION || "";
 const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || "G-1XHHX5ZVND";
 const CLOUDFLARE_WEB_ANALYTICS_TOKEN = process.env.CLOUDFLARE_WEB_ANALYTICS_TOKEN || "";
@@ -929,7 +930,7 @@ ${renderAnalyticsHead()}  <style>
             <span class="timer" id="timer-display">60</span>
           </div>
           <section class="play-card" id="play-card" aria-live="polite">
-            <div class="play-icon" id="play-icon"><img src="${escapeHtml(SOCIAL_IMAGE)}" alt="Kids charades printable cards ready to play"></div>
+            <div class="play-icon" id="play-icon"><img src="${escapeHtml(READY_IMAGE)}" alt="Kids charades printable cards ready to play"></div>
             <div class="play-title" id="play-title-text">Ready?</div>
             <div class="play-subtitle" id="play-subtitle">Tap Start Round</div>
           </section>
