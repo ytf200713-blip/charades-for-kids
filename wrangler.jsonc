@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "charades-for-kids",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-06-22",
+  "assets": {
+    "directory": "./site",
+    "binding": "ASSETS"
+  }
+}

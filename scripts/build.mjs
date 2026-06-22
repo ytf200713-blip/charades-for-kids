@@ -16,7 +16,7 @@ import {
 import { validateData } from "./validate.mjs";
 
 const CARD_PAGE_SIZE = 9;
-const SITE_URL = (process.env.SITE_URL || "https://www.charadesforkidsprintable.com").replace(/\/+$/g, "");
+const SITE_URL = (process.env.SITE_URL || "https://charades-for-kids.com").replace(/\/+$/g, "");
 const SITE_TITLE = "Charades for Kids Printable Cards - Free Online Game and PDFs";
 const SITE_DESCRIPTION = "Play charades for kids online or download 144 family-safe printable cards for classrooms, parties, and family game night.";
 const SOCIAL_IMAGE = "assets/cards/charades-ready-scene.jpg";
