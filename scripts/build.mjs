@@ -21,7 +21,7 @@ const SITE_TITLE = "Charades for Kids Printable Cards - Free Online Game and PDF
 const SITE_DESCRIPTION = "Play charades for kids online or download 144 family-safe printable cards for classrooms, parties, and family game night.";
 const SOCIAL_IMAGE = "og-image.jpg";
 const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION || "";
-const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || "";
+const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || "G-1XHHX5ZVND";
 const CLOUDFLARE_WEB_ANALYTICS_TOKEN = process.env.CLOUDFLARE_WEB_ANALYTICS_TOKEN || "";
 
 async function attachIllustrations(decks) {
