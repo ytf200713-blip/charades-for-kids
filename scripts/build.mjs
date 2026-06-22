@@ -19,7 +19,10 @@ const CARD_PAGE_SIZE = 9;
 const SITE_URL = (process.env.SITE_URL || "https://charades-for-kids.com").replace(/\/+$/g, "");
 const SITE_TITLE = "Charades for Kids Printable Cards - Free Online Game and PDFs";
 const SITE_DESCRIPTION = "Play charades for kids online or download 144 family-safe printable cards for classrooms, parties, and family game night.";
-const SOCIAL_IMAGE = "assets/cards/charades-ready-scene.jpg";
+const SOCIAL_IMAGE = "og-image.jpg";
+const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION || "";
+const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || "";
+const CLOUDFLARE_WEB_ANALYTICS_TOKEN = process.env.CLOUDFLARE_WEB_ANALYTICS_TOKEN || "";
 
 async function attachIllustrations(decks) {
   const result = structuredClone(decks);
@@ -428,6 +431,31 @@ function renderJsonLd(decks) {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
+function renderVerificationMeta() {
+  if (!GOOGLE_SITE_VERIFICATION) return "";
+  return `  <meta name="google-site-verification" content="${escapeHtml(GOOGLE_SITE_VERIFICATION)}">\n`;
+}
+
+function renderAnalyticsHead() {
+  if (!GA_MEASUREMENT_ID) return "";
+  const escapedId = escapeHtml(GA_MEASUREMENT_ID);
+  const jsonId = JSON.stringify(GA_MEASUREMENT_ID);
+  return `  <script async src="https://www.googletagmanager.com/gtag/js?id=${escapedId}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', ${jsonId});
+  </script>
+`;
+}
+
+function renderAnalyticsBody() {
+  if (!CLOUDFLARE_WEB_ANALYTICS_TOKEN) return "";
+  const beacon = JSON.stringify({ token: CLOUDFLARE_WEB_ANALYTICS_TOKEN }).replace(/"/g, "&quot;");
+  return `  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="${beacon}"></script>\n`;
+}
+
 function renderIndex(decks, iconManifest) {
   const combined = expectedPdfName("kids-charades-starter-pack");
   const grayscale = expectedPdfName("kids-charades-starter-pack", { grayscale: true });
@@ -456,6 +484,9 @@ function renderIndex(decks, iconManifest) {
   <title>${escapeHtml(SITE_TITLE)}</title>
   <meta name="description" content="${escapeHtml(SITE_DESCRIPTION)}">
   <meta name="robots" content="index,follow">
+${renderVerificationMeta()}  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="canonical" href="${escapeHtml(SITE_URL)}/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Charades for Kids">
@@ -463,13 +494,15 @@ function renderIndex(decks, iconManifest) {
   <meta property="og:description" content="${escapeHtml(SITE_DESCRIPTION)}">
   <meta property="og:url" content="${escapeHtml(SITE_URL)}/">
   <meta property="og:image" content="${escapeHtml(absoluteUrl(SOCIAL_IMAGE))}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(SITE_TITLE)}">
   <meta name="twitter:description" content="${escapeHtml(SITE_DESCRIPTION)}">
   <meta name="twitter:image" content="${escapeHtml(absoluteUrl(SOCIAL_IMAGE))}">
   <meta name="theme-color" content="#fff8e7">
   <script type="application/ld+json">${renderJsonLd(decks)}</script>
-  <style>
+${renderAnalyticsHead()}  <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -963,7 +996,7 @@ function renderIndex(decks, iconManifest) {
       MVP note: this printable set uses curated child-safe prompts and original watercolor-style card art.
     </footer>
   </main>
-  <script src="assets/decks.js"></script>
+${renderAnalyticsBody()}  <script src="assets/decks.js"></script>
   <script src="assets/game.js"></script>
 </body>
 </html>`;

@@ -10,6 +10,7 @@
     "crop-illustration-sheets": "node scripts/crop-illustration-sheets.mjs",
     "compose-vintage-cards": "node scripts/compose-vintage-cards.mjs",
     "optimize": "node scripts/optimize-site-assets.mjs",
+    "brand-assets": "node scripts/generate-brand-assets.mjs",
     "prepare-card-generation": "node scripts/prepare-card-generation.mjs",
     "normalize-card-batch": "node scripts/normalize-card-batch.mjs",
     "card-contact-sheet": "node scripts/make-card-contact-sheet.mjs",

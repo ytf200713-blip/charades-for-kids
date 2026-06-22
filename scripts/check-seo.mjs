@@ -34,7 +34,11 @@ async function main() {
   requireMatch(html, /<title>[^<]{20,70}<\/title>/, "Missing or weak title tag.", failures);
   requireMatch(html, /<meta name="description" content="[^"]{80,180}">/, "Missing or weak meta description.", failures);
   requireMatch(html, /<link rel="canonical" href="https:\/\/[^"]+\/">/, "Missing absolute canonical URL.", failures);
+  requireMatch(html, /<link rel="icon" href="\/favicon\.svg" type="image\/svg\+xml">/, "Missing SVG favicon link.", failures);
+  requireMatch(html, /<link rel="apple-touch-icon" href="\/apple-touch-icon\.png">/, "Missing Apple touch icon link.", failures);
   requireMatch(html, /property="og:image"/, "Missing Open Graph image.", failures);
+  requireMatch(html, /property="og:image:width" content="1200"/, "Missing Open Graph image width.", failures);
+  requireMatch(html, /property="og:image:height" content="630"/, "Missing Open Graph image height.", failures);
   requireMatch(html, /name="twitter:card" content="summary_large_image"/, "Missing Twitter large-card metadata.", failures);
   requireMatch(html, /<script type="application\/ld\+json">/, "Missing JSON-LD structured data.", failures);
 
@@ -76,6 +80,22 @@ async function main() {
   if (!/<loc>https:\/\/[^<]+\/<\/loc>/.test(sitemap)) failures.push("sitemap.xml is missing an absolute homepage URL.");
 
   const files = await walkFiles(siteDir);
+  const requiredFiles = [
+    "favicon.svg",
+    "favicon-32x32.png",
+    "apple-touch-icon.png",
+    "og-image.jpg",
+    "robots.txt",
+    "sitemap.xml"
+  ];
+  for (const file of requiredFiles) {
+    try {
+      await fs.access(path.join(siteDir, file));
+    } catch {
+      failures.push(`Missing required public asset: ${file}`);
+    }
+  }
+
   for (const filePath of files) {
     const stat = await fs.stat(filePath);
     if (stat.size > maxAssetBytes) {
