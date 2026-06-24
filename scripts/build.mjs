@@ -1063,6 +1063,9 @@ ${renderAnalyticsBody()}  <script src="assets/decks.js"></script>
 function renderEducatorsPage(decks) {
   const combined = expectedPdfName("kids-charades-starter-pack");
   const grayscale = expectedPdfName("kids-charades-starter-pack", { grayscale: true });
+  const previewCards = ["animals", "actions", "food", "jobs", "sports", "everyday-objects"]
+    .map((deckId) => decks.decks.find((deck) => deck.id === deckId)?.cards[0])
+    .filter((card) => card?.siteCardSrc);
   const deckLinks = decks.decks.map((deck) => {
     const pdfName = expectedPdfName(deck.id);
     return `
@@ -1188,6 +1191,27 @@ ${renderAnalyticsHead()}  <style>
       margin: 0;
       font-weight: 800;
     }
+    .card-preview-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .preview-card {
+      min-width: 0;
+      padding: 8px;
+      border: 2px solid #26334c;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 3px 0 #172033;
+    }
+    .preview-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 25 / 32;
+      object-fit: contain;
+    }
     .actions {
       display: flex;
       flex-wrap: wrap;
@@ -1270,6 +1294,13 @@ ${renderAnalyticsHead()}  <style>
       .three-grid {
         grid-template-columns: 1fr;
       }
+      .card-preview-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .preview-card {
+        padding: 5px;
+      }
       .nav {
         align-items: flex-start;
         flex-direction: column;
@@ -1316,6 +1347,16 @@ ${renderAnalyticsHead()}  <style>
           </div>
         </dl>
       </aside>
+    </section>
+
+    <section aria-label="Printable charades card examples">
+      <div class="card-preview-row">
+        ${previewCards.map((card) => `
+          <div class="preview-card">
+            <img src="/${escapeHtml(card.siteCardSrc)}" alt="${escapeHtml(`Printable ${card.title.toLowerCase()} charades card for kids`)}" loading="lazy" decoding="async">
+          </div>
+        `).join("")}
+      </div>
     </section>
 
     <section>

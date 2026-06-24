@@ -119,6 +119,27 @@
       margin: 0;
       font-weight: 800;
     }
+    .card-preview-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .preview-card {
+      min-width: 0;
+      padding: 8px;
+      border: 2px solid #26334c;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 3px 0 #172033;
+    }
+    .preview-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 25 / 32;
+      object-fit: contain;
+    }
     .actions {
       display: flex;
       flex-wrap: wrap;
@@ -201,6 +222,13 @@
       .three-grid {
         grid-template-columns: 1fr;
       }
+      .card-preview-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .preview-card {
+        padding: 5px;
+      }
       .nav {
         align-items: flex-start;
         flex-direction: column;
@@ -247,6 +275,36 @@
           </div>
         </dl>
       </aside>
+    </section>
+
+    <section aria-label="Printable charades card examples">
+      <div class="card-preview-row">
+        
+          <div class="preview-card">
+            <img src="/assets/cards/animals/001-bear-card.jpg" alt="Printable bear charades card for kids" loading="lazy" decoding="async">
+          </div>
+        
+          <div class="preview-card">
+            <img src="/assets/cards/actions/025-walk-card.jpg" alt="Printable walk charades card for kids" loading="lazy" decoding="async">
+          </div>
+        
+          <div class="preview-card">
+            <img src="/assets/cards/food/049-apple-card.jpg" alt="Printable apple charades card for kids" loading="lazy" decoding="async">
+          </div>
+        
+          <div class="preview-card">
+            <img src="/assets/cards/jobs/073-artist-card.jpg" alt="Printable artist charades card for kids" loading="lazy" decoding="async">
+          </div>
+        
+          <div class="preview-card">
+            <img src="/assets/cards/sports/097-baseball-card.jpg" alt="Printable baseball charades card for kids" loading="lazy" decoding="async">
+          </div>
+        
+          <div class="preview-card">
+            <img src="/assets/cards/everyday-objects/121-backpack-card.jpg" alt="Printable backpack charades card for kids" loading="lazy" decoding="async">
+          </div>
+        
+      </div>
     </section>
 
     <section>
