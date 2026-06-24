@@ -19,6 +19,11 @@ const CARD_PAGE_SIZE = 9;
 const SITE_URL = (process.env.SITE_URL || "https://charades-for-kids.com").replace(/\/+$/g, "");
 const SITE_TITLE = "Charades for Kids Printable Cards - Free Online Game and PDFs";
 const SITE_DESCRIPTION = "Play charades for kids online or download 144 family-safe printable cards for classrooms, parties, and family game night.";
+const EDUCATORS_TITLE = "Free Printable Charades Cards for Teachers and Homeschool";
+const EDUCATORS_DESCRIPTION = "Use 144 free printable charades cards for classroom brain breaks, homeschool movement activities, indoor recess, ESL speaking practice, and vocabulary review.";
+const CREATIVE_COMMONS_LICENSE_NAME = "Creative Commons Attribution-NonCommercial 4.0 International";
+const CREATIVE_COMMONS_LICENSE_SHORT = "CC BY-NC 4.0";
+const CREATIVE_COMMONS_LICENSE_URL = "https://creativecommons.org/licenses/by-nc/4.0/";
 const SOCIAL_IMAGE = "og-image.jpg";
 const READY_IMAGE = "assets/cards/charades-ready-scene.jpg";
 const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION || "";
@@ -266,6 +271,7 @@ function renderLicensePage() {
       <h2>License and Safety Notes</h2>
       <p>This printable pack is a curated children&apos;s activity set. Cards avoid adult, violent, scary, political, and brand-specific prompts.</p>
       <p>The card art uses original watercolor-style illustrations composed into a consistent printable vintage card template.</p>
+      <p>This resource is licensed under <code>${CREATIVE_COMMONS_LICENSE_SHORT}</code>: Creative Commons Attribution-NonCommercial 4.0 International. You may share and adapt it for non-commercial educational use with attribution to Charades for Kids.</p>
       <p>Print tip: use “Actual size” or “100% scale” in your printer dialog so the cut lines stay aligned.</p>
     </section>
   `;
@@ -427,6 +433,50 @@ function renderJsonLd(decks) {
           text: "One player draws a card and acts it out silently while everyone else guesses before the timer ends."
         }
       ]
+    }
+  ];
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+function renderEducatorsJsonLd(decks) {
+  const allCards = getAllCards(decks);
+  const deckNames = decks.decks.map((deck) => deck.name);
+  const data = [
+    {
+      "@context": "https://schema.org",
+      "@type": "LearningResource",
+      name: "Free Printable Charades Cards for Kids",
+      url: absoluteUrl("educators/"),
+      description: EDUCATORS_DESCRIPTION,
+      inLanguage: "en-US",
+      learningResourceType: ["Activity", "Game", "Printable"],
+      educationalUse: ["Brain break", "Indoor recess", "ESL speaking practice", "Vocabulary practice", "Homeschool activity"],
+      audience: {
+        "@type": "EducationalAudience",
+        educationalRole: ["teacher", "parent", "student"]
+      },
+      typicalAgeRange: "4-10",
+      isAccessibleForFree: true,
+      license: CREATIVE_COMMONS_LICENSE_URL,
+      provider: {
+        "@type": "Organization",
+        name: "Charades for Kids",
+        url: SITE_URL
+      },
+      about: deckNames,
+      teaches: [
+        "Expressive communication",
+        "Vocabulary recognition",
+        "Nonverbal communication",
+        "Turn taking",
+        "Social interaction"
+      ],
+      hasPart: {
+        "@type": "CreativeWork",
+        name: "Kids Charades Starter Pack",
+        url: absoluteUrl("downloads/kids-charades-starter-pack.pdf"),
+        description: `A printable pack with ${allCards.length} family-safe picture cards across ${deckNames.join(", ")}.`
+      }
     }
   ];
   return JSON.stringify(data).replace(/</g, "\\u003c");
@@ -878,6 +928,7 @@ ${renderAnalyticsHead()}  <style>
         <div class="actions">
           <a class="button" href="#play" data-event="start_play_intent">Play Online</a>
           <a class="button secondary" href="#downloads" data-event="download_section_intent">Download Printable Cards</a>
+          <a class="button ghost" href="/educators/" data-event="educator_resource_intent">For Teachers</a>
         </div>
       </div>
       <div class="preview" aria-label="Printable charades card examples">
@@ -979,6 +1030,12 @@ ${renderAnalyticsHead()}  <style>
     </section>
 
     <section>
+      <h2>For Teachers and Homeschool</h2>
+      <p>Teachers and homeschool parents can use this free printable charades resource for classroom brain breaks, indoor recess, ESL speaking practice, vocabulary review, and movement-based learning. The educator resource page includes learning goals, usage rights, age guidance, and direct PDF links for submitting or sharing the activity as an open educational resource.</p>
+      <a class="button secondary" href="/educators/" data-event="educator_resource_link">View Educator Resource</a>
+    </section>
+
+    <section>
       <h2>Why This Charades Game Works</h2>
       <p>A good game of charades for kids needs prompts that children can understand quickly. The best cards use familiar words, clear actions, and simple objects, so players spend less time asking for help and more time acting, laughing, and guessing. That is why this printable set focuses on everyday themes instead of tricky movie titles, pop culture references, or jokes that only adults understand.</p>
       <p>Use charades for kids when you need a low-prep activity that still feels active and social. Parents can print a short deck before a playdate, teachers can use one theme as a five-minute classroom brain break, and party hosts can mix the full pack for a longer group game. The online version is useful when you do not have a printer nearby, while the printable PDFs are better when you want screen-free charades for kids around a table.</p>
@@ -994,12 +1051,335 @@ ${renderAnalyticsHead()}  <style>
     </section>
 
     <footer>
-      MVP note: this printable set uses curated child-safe prompts and original watercolor-style card art.
+      MVP note: this printable set uses curated child-safe prompts and original watercolor-style card art. Licensed under <a href="${escapeHtml(CREATIVE_COMMONS_LICENSE_URL)}">${escapeHtml(CREATIVE_COMMONS_LICENSE_SHORT)}</a> for non-commercial use with attribution.
     </footer>
   </main>
 ${renderAnalyticsBody()}  <script src="assets/decks.js"></script>
   <script src="assets/game.js"></script>
 </body>
+</html>`;
+}
+
+function renderEducatorsPage(decks) {
+  const combined = expectedPdfName("kids-charades-starter-pack");
+  const grayscale = expectedPdfName("kids-charades-starter-pack", { grayscale: true });
+  const deckLinks = decks.decks.map((deck) => {
+    const pdfName = expectedPdfName(deck.id);
+    return `
+      <article class="resource-card">
+        <h3>${escapeHtml(deck.name)} Charades Cards</h3>
+        <p>${escapeHtml(deck.description)} Includes ${deck.cards.length} printable cards.</p>
+        <a href="/downloads/${escapeHtml(pdfName)}">Download ${escapeHtml(deck.name)} PDF</a>
+      </article>
+    `;
+  }).join("");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(EDUCATORS_TITLE)}</title>
+  <meta name="description" content="${escapeHtml(EDUCATORS_DESCRIPTION)}">
+  <meta name="robots" content="index,follow">
+${renderVerificationMeta()}  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="canonical" href="${escapeHtml(SITE_URL)}/educators/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Charades for Kids">
+  <meta property="og:title" content="${escapeHtml(EDUCATORS_TITLE)}">
+  <meta property="og:description" content="${escapeHtml(EDUCATORS_DESCRIPTION)}">
+  <meta property="og:url" content="${escapeHtml(SITE_URL)}/educators/">
+  <meta property="og:image" content="${escapeHtml(absoluteUrl(SOCIAL_IMAGE))}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeHtml(EDUCATORS_TITLE)}">
+  <meta name="twitter:description" content="${escapeHtml(EDUCATORS_DESCRIPTION)}">
+  <meta name="twitter:image" content="${escapeHtml(absoluteUrl(SOCIAL_IMAGE))}">
+  <meta name="theme-color" content="#fff8e7">
+  <script type="application/ld+json">${renderEducatorsJsonLd(decks)}</script>
+${renderAnalyticsHead()}  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #25324a;
+      background: #fff8e7;
+      font-family: "Chalkboard SE", "Comic Sans MS", "Arial Rounded MT Bold", Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+    }
+    .wrap {
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 34px;
+      font-weight: 800;
+    }
+    .nav a {
+      color: #224b78;
+      text-decoration: none;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 28px;
+      align-items: start;
+      padding-bottom: 26px;
+      border-bottom: 2px solid #172033;
+    }
+    h1 {
+      margin: 0;
+      max-width: 780px;
+      font-size: clamp(36px, 5vw, 58px);
+      line-height: 1;
+      letter-spacing: 0;
+      color: #1e211c;
+    }
+    h2 {
+      margin: 42px 0 14px;
+      font-size: 28px;
+      letter-spacing: 0;
+      color: #25324a;
+    }
+    h3 {
+      margin: 0 0 8px;
+      font-size: 21px;
+      letter-spacing: 0;
+      color: #25324a;
+    }
+    p { margin: 0 0 16px; }
+    ul {
+      margin: 0;
+      padding-left: 22px;
+    }
+    li { margin-bottom: 8px; }
+    .lead {
+      margin-top: 18px;
+      max-width: 720px;
+      font-size: 19px;
+      color: #36506d;
+    }
+    .summary-card {
+      border: 2px solid #26334c;
+      border-radius: 8px;
+      padding: 18px;
+      background: #ffffff;
+      box-shadow: 0 3px 0 #172033;
+    }
+    .summary-card dl {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+    }
+    .summary-card dt {
+      font-size: 13px;
+      font-weight: 800;
+      color: #59657a;
+      text-transform: uppercase;
+    }
+    .summary-card dd {
+      margin: 0;
+      font-weight: 800;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 2px solid #172033;
+      border-radius: 8px;
+      background: #224b78;
+      color: #ffffff;
+      text-decoration: none;
+      font-family: inherit;
+      font-weight: 800;
+      box-shadow: 0 3px 0 #172033;
+    }
+    .button.secondary {
+      background: #fff4d6;
+      color: #25324a;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .three-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .resource-card,
+    .note {
+      border: 2px solid #26334c;
+      border-radius: 8px;
+      padding: 18px;
+      background: #ffffff;
+    }
+    .resource-card a,
+    .note a {
+      color: #224b78;
+      font-weight: 800;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .badge {
+      border: 2px solid #172033;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .license-box {
+      border-left: 5px solid #ffcf5a;
+      padding: 16px 18px;
+      background: #fffdf8;
+    }
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 2px solid #172033;
+      color: #4a5363;
+      font-size: 14px;
+    }
+    @media (max-width: 760px) {
+      .wrap {
+        padding: 20px 14px 42px;
+      }
+      .hero,
+      .grid,
+      .three-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="nav" aria-label="Site navigation">
+      <a href="/">Charades for Kids</a>
+      <a href="/#downloads">Printable PDFs</a>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <h1>Free Printable Charades Cards for Teachers and Homeschool</h1>
+        <p class="lead">Use these free printable charades cards as a low-prep classroom game, homeschool movement break, indoor recess activity, ESL speaking practice, or vocabulary review game for children ages 4-10.</p>
+        <div class="actions">
+          <a class="button" href="/downloads/${escapeHtml(combined)}">Download Starter Pack</a>
+          <a class="button secondary" href="/#play">Play Online</a>
+        </div>
+      </div>
+      <aside class="summary-card" aria-label="Resource summary">
+        <dl>
+          <div>
+            <dt>Resource type</dt>
+            <dd>Printable activity, game</dd>
+          </div>
+          <div>
+            <dt>Age range</dt>
+            <dd>4-10</dd>
+          </div>
+          <div>
+            <dt>Cards included</dt>
+            <dd>144 picture cards</dd>
+          </div>
+          <div>
+            <dt>Access</dt>
+            <dd>Free, no account required</dd>
+          </div>
+        </dl>
+      </aside>
+    </section>
+
+    <section>
+      <h2>Educational Use</h2>
+      <p>This Charades for Kids resource supports movement-based learning, expressive communication, vocabulary recognition, turn taking, and social interaction. One child draws a card, acts out the prompt without speaking, and classmates or family members guess the word before the timer ends.</p>
+      <p>The activity works well when students need a short break from seatwork but still benefit from structured speaking, listening, and group participation. Teachers can use one theme for a five-minute classroom brain break, combine several themes for indoor recess, or choose familiar picture prompts for ESL learners and early readers.</p>
+      <div class="three-grid">
+        <div class="note"><strong>Classroom brain breaks</strong><br>Use a small deck between lessons to reset attention through movement and guessing.</div>
+        <div class="note"><strong>ESL speaking practice</strong><br>Use picture cards to reinforce familiar nouns, actions, jobs, sports, and everyday objects.</div>
+        <div class="note"><strong>Homeschool activities</strong><br>Print one theme at a time for screen-free family learning, movement, and vocabulary review.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Learning Goals</h2>
+      <ul>
+        <li>Practice expressive and nonverbal communication by acting out simple prompts.</li>
+        <li>Build vocabulary around animals, actions, food, jobs, sports, and everyday objects.</li>
+        <li>Encourage turn taking, observation, listening, and cooperative group play.</li>
+        <li>Support movement-based learning during classroom transitions, indoor recess, or homeschool breaks.</li>
+        <li>Give early readers and English learners visual prompts that reduce reading pressure.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>What Is Included</h2>
+      <p>The full starter pack includes 144 family-safe picture cards across six themes. Each card uses a clear word and child-friendly illustration so children can understand the prompt quickly. The prompts avoid adult, violent, scary, political, and brand-specific topics.</p>
+      <div class="actions">
+        <a class="button" href="/downloads/${escapeHtml(combined)}">Download Full Starter Pack</a>
+        <a class="button secondary" href="/downloads/${escapeHtml(grayscale)}">Download Grayscale Pack</a>
+      </div>
+      <div class="grid" style="margin-top: 18px;">${deckLinks}</div>
+    </section>
+
+    <section id="usage-rights">
+      <h2>Usage Rights</h2>
+      <div class="license-box">
+        <p><strong>This resource is licensed under ${escapeHtml(CREATIVE_COMMONS_LICENSE_SHORT)}.</strong> The full license name is ${escapeHtml(CREATIVE_COMMONS_LICENSE_NAME)}.</p>
+        <p>You may share, print, copy, and adapt these charades cards for personal, classroom, homeschool, library, and other non-commercial educational activities, as long as you give attribution to Charades for Kids and link back to the source when sharing online.</p>
+        <p>You may not sell the cards, place them behind a paid download, include them in a commercial bundle, or use the artwork in a paid product without separate permission.</p>
+        <p>License URL: <a href="${escapeHtml(CREATIVE_COMMONS_LICENSE_URL)}">${escapeHtml(CREATIVE_COMMONS_LICENSE_URL)}</a></p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Suggested Citation</h2>
+      <p>Charades for Kids. <em>Free Printable Charades Cards for Kids</em>. Available at <a href="${escapeHtml(SITE_URL)}/educators/">${escapeHtml(SITE_URL)}/educators/</a>.</p>
+      <div class="badge-row" aria-label="Resource tags">
+        <span class="badge">charades for kids</span>
+        <span class="badge">printable games</span>
+        <span class="badge">classroom games</span>
+        <span class="badge">brain breaks</span>
+        <span class="badge">indoor recess</span>
+        <span class="badge">ESL games</span>
+        <span class="badge">homeschool activities</span>
+        <span class="badge">vocabulary practice</span>
+      </div>
+    </section>
+
+    <footer>
+      <p>Charades for Kids provides free printable charades cards and an online game for classrooms, homeschool families, parties, and family game night.</p>
+    </footer>
+  </main>
+${renderAnalyticsBody()}</body>
 </html>`;
 }
 
@@ -1068,6 +1448,11 @@ async function writeSeoFiles() {
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>${escapeHtml(SITE_URL)}/educators/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
 `;
 
@@ -1097,9 +1482,12 @@ async function main() {
     "utf8"
   );
   await fs.writeFile(path.join(siteDir, "index.html"), renderIndex(decks, iconManifest), "utf8");
+  const educatorsDir = path.join(siteDir, "educators");
+  await fs.mkdir(educatorsDir, { recursive: true });
+  await fs.writeFile(path.join(educatorsDir, "index.html"), renderEducatorsPage(decks), "utf8");
   await fs.writeFile(path.join(downloadDir, ".gitkeep"), "", "utf8");
   await writeSeoFiles();
-  console.log(`Generated ${printFiles.length} print HTML files, site/index.html, robots.txt, and sitemap.xml.`);
+  console.log(`Generated ${printFiles.length} print HTML files, site/index.html, site/educators/index.html, robots.txt, and sitemap.xml.`);
 }
 
 await main();
