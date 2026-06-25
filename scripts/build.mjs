@@ -21,6 +21,8 @@ const SITE_TITLE = "Charades for Kids Printable Cards - Free Online Game and PDF
 const SITE_DESCRIPTION = "Play charades for kids online or download 144 family-safe printable cards for classrooms, parties, and family game night.";
 const EDUCATORS_TITLE = "Free Printable Charades Cards for Teachers and Homeschool";
 const EDUCATORS_DESCRIPTION = "Use 144 free printable charades cards for classroom brain breaks, homeschool movement activities, indoor recess, ESL speaking practice, and vocabulary review.";
+const FAMILY_TITLE = "Indoor Charades Game for Kids - Free Printable Cards";
+const FAMILY_DESCRIPTION = "Print free charades cards for a screen-free indoor game, rainy day activity, birthday party, playdate, or family game night with kids ages 4-10.";
 const CREATIVE_COMMONS_LICENSE_NAME = "Creative Commons Attribution-NonCommercial 4.0 International";
 const CREATIVE_COMMONS_LICENSE_SHORT = "CC BY-NC 4.0";
 const CREATIVE_COMMONS_LICENSE_URL = "https://creativecommons.org/licenses/by-nc/4.0/";
@@ -482,6 +484,42 @@ function renderEducatorsJsonLd(decks) {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
+function renderFamilyJsonLd(decks) {
+  const allCards = getAllCards(decks);
+  const deckNames = decks.decks.map((deck) => deck.name);
+  const data = [
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      name: "Indoor Charades Game for Kids",
+      url: absoluteUrl("indoor-charades-game-for-kids/"),
+      description: FAMILY_DESCRIPTION,
+      inLanguage: "en-US",
+      isFamilyFriendly: true,
+      isAccessibleForFree: true,
+      license: CREATIVE_COMMONS_LICENSE_URL,
+      audience: {
+        "@type": "PeopleAudience",
+        suggestedMinAge: 4,
+        suggestedMaxAge: 10
+      },
+      about: ["indoor games for kids", "rainy day activities", "birthday party games", "family game night", ...deckNames],
+      hasPart: {
+        "@type": "CreativeWork",
+        name: "Kids Charades Starter Pack",
+        url: absoluteUrl("downloads/kids-charades-starter-pack.pdf"),
+        description: `A free printable pack with ${allCards.length} family-safe picture cards.`
+      },
+      provider: {
+        "@type": "Organization",
+        name: "Charades for Kids",
+        url: SITE_URL
+      }
+    }
+  ];
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 function renderVerificationMeta() {
   if (!GOOGLE_SITE_VERIFICATION) return "";
   return `  <meta name="google-site-verification" content="${escapeHtml(GOOGLE_SITE_VERIFICATION)}">\n`;
@@ -928,6 +966,7 @@ ${renderAnalyticsHead()}  <style>
         <div class="actions">
           <a class="button" href="#play" data-event="start_play_intent">Play Online</a>
           <a class="button secondary" href="#downloads" data-event="download_section_intent">Download Printable Cards</a>
+          <a class="button ghost" href="/indoor-charades-game-for-kids/" data-event="family_resource_intent">For Families</a>
           <a class="button ghost" href="/educators/" data-event="educator_resource_intent">For Teachers</a>
         </div>
       </div>
@@ -1027,6 +1066,12 @@ ${renderAnalyticsHead()}  <style>
     <section>
       <h2>Best Ways to Play</h2>
       <p>For younger kids, choose Animals, Food, or Everyday Objects and let a grown-up read the card quietly. For older kids, mix all decks together and use a 60-second timer. In classrooms, print the grayscale pack to save ink and split students into small teams so more children get a turn to act.</p>
+    </section>
+
+    <section>
+      <h2>Indoor Charades for Families</h2>
+      <p>Need a quick rainy day activity, birthday party game, playdate idea, or family game night that does not need screens? The family page shows how to use these printable picture cards as a simple indoor charades game for kids ages 4-10.</p>
+      <a class="button secondary" href="/indoor-charades-game-for-kids/" data-event="family_resource_link">View Family Game Ideas</a>
     </section>
 
     <section>
@@ -1424,6 +1469,328 @@ ${renderAnalyticsBody()}</body>
 </html>`;
 }
 
+function renderFamilyPage(decks) {
+  const combined = expectedPdfName("kids-charades-starter-pack");
+  const grayscale = expectedPdfName("kids-charades-starter-pack", { grayscale: true });
+  const previewCards = ["animals", "actions", "food", "jobs", "sports", "everyday-objects"]
+    .map((deckId) => decks.decks.find((deck) => deck.id === deckId)?.cards[0])
+    .filter((card) => card?.siteCardSrc);
+  const deckCards = decks.decks.map((deck) => {
+    const pdfName = expectedPdfName(deck.id);
+    return `
+      <article class="resource-card">
+        <h3>${escapeHtml(deck.name)} Charades</h3>
+        <p>${escapeHtml(deck.description)} Includes ${deck.cards.length} kid-friendly picture cards.</p>
+        <a href="/downloads/${escapeHtml(pdfName)}">Download ${escapeHtml(deck.name)} Cards</a>
+      </article>
+    `;
+  }).join("");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(FAMILY_TITLE)}</title>
+  <meta name="description" content="${escapeHtml(FAMILY_DESCRIPTION)}">
+  <meta name="robots" content="index,follow">
+${renderVerificationMeta()}  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="canonical" href="${escapeHtml(SITE_URL)}/indoor-charades-game-for-kids/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Charades for Kids">
+  <meta property="og:title" content="${escapeHtml(FAMILY_TITLE)}">
+  <meta property="og:description" content="${escapeHtml(FAMILY_DESCRIPTION)}">
+  <meta property="og:url" content="${escapeHtml(SITE_URL)}/indoor-charades-game-for-kids/">
+  <meta property="og:image" content="${escapeHtml(absoluteUrl(SOCIAL_IMAGE))}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeHtml(FAMILY_TITLE)}">
+  <meta name="twitter:description" content="${escapeHtml(FAMILY_DESCRIPTION)}">
+  <meta name="twitter:image" content="${escapeHtml(absoluteUrl(SOCIAL_IMAGE))}">
+  <meta name="theme-color" content="#fff8e7">
+  <script type="application/ld+json">${renderFamilyJsonLd(decks)}</script>
+${renderAnalyticsHead()}  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #25324a;
+      background: #fff8e7;
+      font-family: "Chalkboard SE", "Comic Sans MS", "Arial Rounded MT Bold", Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+    }
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 34px;
+      font-weight: 800;
+    }
+    .nav a {
+      color: #224b78;
+      text-decoration: none;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+      gap: 28px;
+      align-items: center;
+      padding-bottom: 26px;
+      border-bottom: 2px solid #172033;
+    }
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(36px, 5vw, 58px);
+      line-height: 1;
+      letter-spacing: 0;
+      color: #1e211c;
+    }
+    h2 {
+      margin: 42px 0 14px;
+      font-size: 28px;
+      letter-spacing: 0;
+      color: #25324a;
+    }
+    h3 {
+      margin: 0 0 8px;
+      font-size: 21px;
+      letter-spacing: 0;
+      color: #25324a;
+    }
+    p { margin: 0 0 16px; }
+    ul {
+      margin: 0;
+      padding-left: 22px;
+    }
+    li { margin-bottom: 8px; }
+    .lead {
+      margin-top: 18px;
+      max-width: 720px;
+      font-size: 19px;
+      color: #36506d;
+    }
+    .hero-card {
+      transform: rotate(1deg);
+      padding: 12px;
+      border: 2px solid #26334c;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 3px 0 #172033;
+    }
+    .hero-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 25 / 32;
+      object-fit: contain;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 2px solid #172033;
+      border-radius: 8px;
+      background: #224b78;
+      color: #ffffff;
+      text-decoration: none;
+      font-family: inherit;
+      font-weight: 800;
+      box-shadow: 0 3px 0 #172033;
+    }
+    .button.secondary {
+      background: #fff4d6;
+      color: #25324a;
+    }
+    .preview-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .preview-card,
+    .resource-card,
+    .note {
+      min-width: 0;
+      border: 2px solid #26334c;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+    .preview-card {
+      padding: 8px;
+      box-shadow: 0 3px 0 #172033;
+    }
+    .preview-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 25 / 32;
+      object-fit: contain;
+    }
+    .three-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .deck-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .resource-card,
+    .note {
+      padding: 18px;
+    }
+    .resource-card a {
+      color: #224b78;
+      font-weight: 800;
+    }
+    .license-box {
+      border-left: 5px solid #ffcf5a;
+      padding: 16px 18px;
+      background: #fffdf8;
+    }
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 2px solid #172033;
+      color: #4a5363;
+      font-size: 14px;
+    }
+    @media (max-width: 760px) {
+      .wrap {
+        padding: 20px 14px 42px;
+      }
+      .hero,
+      .three-grid,
+      .deck-grid {
+        grid-template-columns: 1fr;
+      }
+      .preview-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .preview-card {
+        padding: 5px;
+      }
+      .button {
+        width: 100%;
+      }
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="nav" aria-label="Site navigation">
+      <a href="/">Charades for Kids</a>
+      <a href="/#downloads">Printable PDFs</a>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <h1>Indoor Charades Game for Kids</h1>
+        <p class="lead">Print free picture cards for a screen-free indoor game that works for rainy days, birthday parties, playdates, family game night, and quick after-dinner fun.</p>
+        <div class="actions">
+          <a class="button" href="/downloads/${escapeHtml(combined)}">Download Free Cards</a>
+          <a class="button secondary" href="/#play">Play Online</a>
+        </div>
+      </div>
+      ${previewCards[0] ? `
+        <div class="hero-card">
+          <img src="/${escapeHtml(previewCards[0].siteCardSrc)}" alt="${escapeHtml(`Printable ${previewCards[0].title.toLowerCase()} charades card for kids`)}" decoding="async">
+        </div>
+      ` : ""}
+    </section>
+
+    <section aria-label="Printable charades card examples">
+      <div class="preview-row">
+        ${previewCards.map((card) => `
+          <div class="preview-card">
+            <img src="/${escapeHtml(card.siteCardSrc)}" alt="${escapeHtml(`Printable ${card.title.toLowerCase()} charades card for kids`)}" loading="lazy" decoding="async">
+          </div>
+        `).join("")}
+      </div>
+    </section>
+
+    <section>
+      <h2>A Screen-Free Indoor Game for Kids</h2>
+      <p>Charades is a simple acting and guessing game that gets kids moving without needing toys, screens, or a long setup. One player draws a card, acts out the prompt silently, and everyone else tries to guess the word before the timer runs out.</p>
+      <p>This printable charades game is designed for children ages 4-10. The cards use familiar animals, actions, food, jobs, sports, and everyday objects, so younger kids can understand the prompts quickly and older kids can still make the acting funny.</p>
+    </section>
+
+    <section>
+      <h2>When to Use These Charades Cards</h2>
+      <div class="three-grid">
+        <div class="note"><strong>Rainy day activity</strong><br>Print a short deck when kids need movement but outdoor play is not an option.</div>
+        <div class="note"><strong>Birthday party game</strong><br>Mix all decks together for a simple party activity that works with mixed ages.</div>
+        <div class="note"><strong>Family game night</strong><br>Use the starter pack after dinner for a quick game that young kids can join.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>How to Play</h2>
+      <ul>
+        <li>Download and print the starter pack or choose one theme deck.</li>
+        <li>Cut out the cards and place them face down in a pile.</li>
+        <li>One child picks a card and acts it out without talking.</li>
+        <li>Everyone else guesses the word. Use a 60-second timer for each turn.</li>
+        <li>For younger kids, let an adult quietly read the card before they act.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Download Printable Charades Cards</h2>
+      <p>The full starter pack includes 144 family-safe picture cards. You can print the full pack for a longer game, use the grayscale version to save ink, or download one theme at a time for a shorter play session.</p>
+      <div class="actions">
+        <a class="button" href="/downloads/${escapeHtml(combined)}">Download Starter Pack</a>
+        <a class="button secondary" href="/downloads/${escapeHtml(grayscale)}">Download Grayscale Pack</a>
+      </div>
+      <div class="deck-grid">${deckCards}</div>
+    </section>
+
+    <section>
+      <h2>Why Families Like This Game</h2>
+      <p>This indoor charades game is easy to explain, quick to start, and flexible for different ages. Kids can play in teams, act one card at a time, or choose a theme such as animals or food. The picture cards also help early readers join without feeling stuck on tricky words.</p>
+      <p>The prompts avoid adult, scary, violent, political, and brand-specific topics. The goal is a clean, family-safe game that parents can print once and reuse for playdates, sleepovers, classroom parties, rainy afternoons, and family gatherings.</p>
+    </section>
+
+    <section>
+      <h2>Usage Rights</h2>
+      <div class="license-box">
+        <p><strong>This resource is licensed under ${escapeHtml(CREATIVE_COMMONS_LICENSE_SHORT)}.</strong> You may share, print, copy, and adapt these cards for personal, family, classroom, homeschool, library, and other non-commercial activities with attribution to Charades for Kids.</p>
+        <p>License URL: <a href="${escapeHtml(CREATIVE_COMMONS_LICENSE_URL)}">${escapeHtml(CREATIVE_COMMONS_LICENSE_URL)}</a></p>
+      </div>
+    </section>
+
+    <footer>
+      <p>Charades for Kids provides free printable charades cards and an online game for screen-free family play, classrooms, parties, and rainy days.</p>
+    </footer>
+  </main>
+${renderAnalyticsBody()}</body>
+</html>`;
+}
+
 async function writePrintHtml(decks, iconManifest) {
   const printFiles = [];
   const allCards = getAllCards(decks);
@@ -1494,6 +1861,11 @@ async function writeSeoFiles() {
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>${escapeHtml(SITE_URL)}/indoor-charades-game-for-kids/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
 `;
 
@@ -1526,9 +1898,12 @@ async function main() {
   const educatorsDir = path.join(siteDir, "educators");
   await fs.mkdir(educatorsDir, { recursive: true });
   await fs.writeFile(path.join(educatorsDir, "index.html"), renderEducatorsPage(decks), "utf8");
+  const familyDir = path.join(siteDir, "indoor-charades-game-for-kids");
+  await fs.mkdir(familyDir, { recursive: true });
+  await fs.writeFile(path.join(familyDir, "index.html"), renderFamilyPage(decks), "utf8");
   await fs.writeFile(path.join(downloadDir, ".gitkeep"), "", "utf8");
   await writeSeoFiles();
-  console.log(`Generated ${printFiles.length} print HTML files, site/index.html, site/educators/index.html, robots.txt, and sitemap.xml.`);
+  console.log(`Generated ${printFiles.length} print HTML files, site/index.html, resource pages, robots.txt, and sitemap.xml.`);
 }
 
 await main();
