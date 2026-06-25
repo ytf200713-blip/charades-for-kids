@@ -17,8 +17,8 @@ import { validateData } from "./validate.mjs";
 
 const CARD_PAGE_SIZE = 9;
 const SITE_URL = (process.env.SITE_URL || "https://charades-for-kids.com").replace(/\/+$/g, "");
-const SITE_TITLE = "Charades for Kids Printable Cards - Free Online Game and PDFs";
-const SITE_DESCRIPTION = "Play charades for kids online or download 144 family-safe printable cards for classrooms, parties, and family game night.";
+const SITE_TITLE = "Charades for Kids Generator - Free Printable Cards and Online Game";
+const SITE_DESCRIPTION = "Use a free kids charades generator online or download 144 family-safe printable picture cards for classrooms, parties, homeschool, and family game night.";
 const EDUCATORS_TITLE = "Free Printable Charades Cards for Teachers and Homeschool";
 const EDUCATORS_DESCRIPTION = "Use 144 free printable charades cards for classroom brain breaks, homeschool movement activities, indoor recess, ESL speaking practice, and vocabulary review.";
 const FAMILY_TITLE = "Indoor Charades Game for Kids - Free Printable Cards";
@@ -328,10 +328,13 @@ function renderJsonLd(decks) {
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      name: "Charades for Kids Online Game",
+      name: "Charades for Kids Generator",
+      alternateName: ["Kids Charades Generator", "Online Charades Generator for Kids", "Charades Word Generator for Kids"],
       url: absoluteUrl("#play"),
       applicationCategory: "GameApplication",
       operatingSystem: "Any",
+      description: "A free online charades generator that randomly shows kid-friendly picture prompts from printable cards.",
+      keywords: "charades generator, kids charades generator, charades word generator, printable charades cards, charades for kids",
       isFamilyFriendly: true,
       audience: {
         "@type": "PeopleAudience",
@@ -366,6 +369,14 @@ function renderJsonLd(decks) {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       mainEntity: [
+        {
+          "@type": "Question",
+          name: "Can I use this as a charades generator?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. The online game works as a free kids charades generator by randomly showing family-safe prompts from the printable card set."
+          }
+        },
         {
           "@type": "Question",
           name: "What ages are these charades cards for?",
@@ -962,7 +973,7 @@ ${renderAnalyticsHead()}  <style>
     <section class="hero">
       <div>
         <h1>Charades for Kids</h1>
-        <p class="lead">Play family-safe charades online, or download printable cards with cartoon icons for classrooms, birthday parties, and family game night.</p>
+        <p class="lead">Use a free kids charades generator online, or download printable picture cards for classrooms, birthday parties, homeschool breaks, and family game night.</p>
         <div class="actions">
           <a class="button" href="#play" data-event="start_play_intent">Play Online</a>
           <a class="button secondary" href="#downloads" data-event="download_section_intent">Download Printable Cards</a>
@@ -979,7 +990,8 @@ ${renderAnalyticsHead()}  <style>
     </section>
 
     <section id="play" aria-labelledby="play-title">
-      <h2 id="play-title">Play Online</h2>
+      <h2 id="play-title">Kids Charades Generator</h2>
+      <p class="section-intro">Start a round to randomly generate kid-friendly charades prompts from the full picture-card set. You can filter by theme or age, use the timer for live play, or download the same prompts as printable PDF cards.</p>
       <div class="game-shell">
         <aside class="game-controls" aria-label="Game controls">
           <div class="field">
@@ -1010,6 +1022,7 @@ ${renderAnalyticsHead()}  <style>
             <div class="score-box"><strong id="score-skipped">0</strong><span>Skipped</span></div>
             <div class="score-box"><strong id="cards-left">0</strong><span>Left</span></div>
           </div>
+          <button class="button secondary" id="generate-card" type="button">Generate Card</button>
           <button class="button" id="start-round" type="button">Start Round</button>
           <button class="button ghost" id="reset-game" type="button">Reset</button>
         </aside>
@@ -1054,7 +1067,13 @@ ${renderAnalyticsHead()}  <style>
     <section>
       <h2>What Are Charades for Kids?</h2>
       <p>Charades for kids is a simple acting and guessing game. One player picks a prompt, acts it out without speaking, and the rest of the group tries to guess the word before time runs out. It works well for young players because the rules are easy, the game uses movement, and adults can quietly help early readers.</p>
-      <p>This page includes both an online charades game and printable charades cards, so you can play from a phone or print a cut-out deck for screen-free activities.</p>
+      <p>This page includes both an online charades generator and printable charades cards, so you can generate prompts from a phone or print a cut-out deck for screen-free activities.</p>
+    </section>
+
+    <section>
+      <h2>How the Charades Generator Works</h2>
+      <p>This charades for kids generator randomly draws from 144 picture-based prompts across Animals, Actions, Food, Jobs, Sports, and Everyday Objects. Unlike an open-ended word generator, every prompt is preselected to be kid-safe, easy to act out, and useful for ages 4-10.</p>
+      <p>Use the generator when you want a quick no-print game. Use the PDF cards when you want a screen-free activity for homeschool groups, classroom centers, parties, or family game night.</p>
     </section>
 
     <section>
@@ -1090,13 +1109,13 @@ ${renderAnalyticsHead()}  <style>
       <h2>Common Questions</h2>
       <div class="steps faq">
         <div class="step"><strong>What ages is it for?</strong><br>Best for ages 4-10, with easy prompts and a few medium prompts for older kids.</div>
+        <div class="step"><strong>Is this a charades generator?</strong><br>Yes. The online game randomly generates kid-friendly charades prompts from the printable picture-card set.</div>
         <div class="step"><strong>Can I print it at home?</strong><br>Yes. Use US Letter paper and print at 100% scale for clean card cuts.</div>
-        <div class="step"><strong>Is it family-safe?</strong><br>Yes. The prompts avoid adult, violent, scary, political, and brand-specific topics.</div>
       </div>
     </section>
 
     <footer>
-      MVP note: this printable set uses curated child-safe prompts and original watercolor-style card art. Licensed under <a href="${escapeHtml(CREATIVE_COMMONS_LICENSE_URL)}">${escapeHtml(CREATIVE_COMMONS_LICENSE_SHORT)}</a> for non-commercial use with attribution.
+      MVP note: this Charades for Kids printable set uses curated child-safe prompts and original watercolor-style card art. Licensed under <a href="${escapeHtml(CREATIVE_COMMONS_LICENSE_URL)}">${escapeHtml(CREATIVE_COMMONS_LICENSE_SHORT)}</a> for non-commercial use with attribution.
     </footer>
   </main>
 ${renderAnalyticsBody()}  <script src="assets/decks.js"></script>
@@ -1869,8 +1888,37 @@ async function writeSeoFiles() {
 </urlset>
 `;
 
+  const llms = `# Charades for Kids
+
+Charades for Kids is a free family-safe resource for kids ages 4-10. It provides an online kids charades generator and downloadable printable picture-card PDFs.
+
+## Core Pages
+
+- Home and online charades generator: ${SITE_URL}/
+- Family indoor game guide: ${SITE_URL}/indoor-charades-game-for-kids/
+- Teacher and homeschool resource: ${SITE_URL}/educators/
+
+## What the Site Offers
+
+- 144 printable charades picture cards
+- Six prompt themes: Animals, Actions, Food, Jobs, Sports, and Everyday Objects
+- Free online charades generator for random kid-safe prompts
+- US Letter PDF downloads, including a grayscale pack for lower-ink printing
+- Non-commercial educational sharing under ${CREATIVE_COMMONS_LICENSE_SHORT}
+
+## Best-Fit Uses
+
+- Homeschool movement breaks
+- Classroom brain breaks and indoor recess
+- ESL speaking and vocabulary practice
+- Birthday party games
+- Rainy day indoor activities
+- Family game night
+`;
+
   await fs.writeFile(path.join(siteDir, "robots.txt"), robots, "utf8");
   await fs.writeFile(path.join(siteDir, "sitemap.xml"), sitemap, "utf8");
+  await fs.writeFile(path.join(siteDir, "llms.txt"), llms, "utf8");
 }
 
 async function main() {

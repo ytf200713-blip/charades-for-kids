@@ -3,6 +3,7 @@
   const els = {
     deckSelect: document.getElementById("deck-select"),
     ageSelect: document.getElementById("age-select"),
+    generateCard: document.getElementById("generate-card"),
     startRound: document.getElementById("start-round"),
     resetGame: document.getElementById("reset-game"),
     skipCard: document.getElementById("skip-card"),
@@ -27,7 +28,8 @@
     seconds: 60,
     remaining: 60,
     timerId: null,
-    running: false
+    running: false,
+    mode: "ready"
   };
 
   function getTimerSeconds() {
@@ -62,6 +64,10 @@
   function updateScore() {
     els.scoreCorrect.textContent = String(state.correct);
     els.scoreSkipped.textContent = String(state.skipped);
+    if (state.mode === "single") {
+      els.cardsLeft.textContent = String(getFilteredCards().length);
+      return;
+    }
     els.cardsLeft.textContent = String(state.deck.length + (state.current ? 1 : 0));
   }
 
@@ -125,6 +131,34 @@
     state.running = false;
   }
 
+  function generateCard() {
+    stopTimer();
+    state.mode = "single";
+    state.correct = 0;
+    state.skipped = 0;
+    state.deck = [];
+    state.seconds = getTimerSeconds();
+    state.remaining = state.seconds;
+    els.timerDisplay.textContent = String(state.seconds);
+
+    const cards = getFilteredCards();
+    if (!cards.length) {
+      state.current = null;
+      els.roundLabel.textContent = "No cards match this filter.";
+      renderCard(null);
+      setButtons(true);
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * cards.length);
+    state.current = cards[randomIndex];
+    els.roundLabel.textContent = `Random card from ${cards.length} available prompts`;
+    renderCard(state.current);
+    els.correctCard.disabled = true;
+    els.skipCard.disabled = true;
+    els.nextCard.disabled = false;
+  }
+
   function startTimer() {
     stopTimer();
     state.remaining = state.seconds;
@@ -147,6 +181,7 @@
     state.skipped = 0;
     state.deck = shuffle(getFilteredCards());
     state.current = null;
+    state.mode = "round";
     els.timerDisplay.textContent = String(state.seconds);
 
     if (!state.deck.length) {
@@ -170,6 +205,7 @@
     state.skipped = 0;
     state.seconds = getTimerSeconds();
     state.remaining = state.seconds;
+    state.mode = "ready";
     els.timerDisplay.textContent = String(state.seconds);
     els.roundLabel.textContent = "Choose a deck, then start.";
     setButtons(true);
@@ -189,12 +225,17 @@
   }
 
   function nextWithoutScore() {
+    if (state.mode === "single") {
+      generateCard();
+      return;
+    }
     if (!state.current || !state.running) return;
     drawNextCard();
   }
 
   function syncReadyCount() {
     if (state.running) return;
+    state.mode = "ready";
     const count = getFilteredCards().length;
     els.cardsLeft.textContent = String(count);
     els.roundLabel.textContent = `${count} cards available`;
@@ -202,6 +243,7 @@
     els.timerDisplay.textContent = String(state.seconds);
   }
 
+  els.generateCard.addEventListener("click", generateCard);
   els.startRound.addEventListener("click", startRound);
   els.resetGame.addEventListener("click", resetGame);
   els.correctCard.addEventListener("click", markCorrect);

@@ -20,25 +20,37 @@ function logoSvg(size = 512) {
 </svg>`;
 }
 
-function ogSvg() {
+function ogBaseSvg() {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#fff8e7"/>
-  <rect x="52" y="52" width="1096" height="526" rx="36" fill="#ffffff" stroke="#1e211c" stroke-width="6"/>
-  <rect x="792" y="82" width="246" height="318" rx="28" fill="#f7ead0" stroke="#1e211c" stroke-width="10" transform="rotate(-6 915 241)"/>
-  <rect x="886" y="126" width="246" height="318" rx="28" fill="#fff4d6" stroke="#1e211c" stroke-width="10" transform="rotate(8 1009 285)"/>
-  <circle cx="1012" cy="280" r="76" fill="#ffcf5a" stroke="#1e211c" stroke-width="12"/>
-  <path d="M956 296c36 42 78 42 112 0" fill="none" stroke="#1e211c" stroke-width="13" stroke-linecap="round"/>
-  <circle cx="984" cy="254" r="9" fill="#1e211c"/>
-  <circle cx="1040" cy="254" r="9" fill="#1e211c"/>
-  <text x="96" y="184" fill="#1e211c" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="72" font-weight="800">Charades for Kids</text>
-  <text x="96" y="270" fill="#224b78" font-family="Arial, sans-serif" font-size="39" font-weight="700">Free online game + printable PDF cards</text>
-  <text x="96" y="344" fill="#36506d" font-family="Arial, sans-serif" font-size="31">144 family-safe cards for classrooms, parties,</text>
-  <text x="96" y="386" fill="#36506d" font-family="Arial, sans-serif" font-size="31">and family game night.</text>
-  <rect x="96" y="456" width="236" height="58" rx="29" fill="#224b78"/>
-  <text x="132" y="495" fill="#ffffff" font-family="Arial, sans-serif" font-size="27" font-weight="800">Print and play</text>
-  <rect x="356" y="456" width="210" height="58" rx="29" fill="#ffcf5a" stroke="#1e211c" stroke-width="3"/>
-  <text x="396" y="495" fill="#1e211c" font-family="Arial, sans-serif" font-size="27" font-weight="800">Ages 4-10</text>
+  <text x="90" y="532" fill="#1e2a44" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="52" font-weight="800">144 Printable Charades Cards</text>
+  <text x="92" y="582" fill="#315a86" font-family="Arial, sans-serif" font-size="30" font-weight="700">Picture cards for homeschool, family game night, and indoor play</text>
 </svg>`;
+}
+
+async function generateOpenGraphImage() {
+  const cardItems = [
+    { src: "assets/cards/animals/002-cat-card.jpg", x: 115, y: 54, rotate: -7 },
+    { src: "assets/cards/actions/038-brush-teeth-card.jpg", x: 365, y: 34, rotate: 4 },
+    { src: "assets/cards/food/061-pizza-card.jpg", x: 615, y: 54, rotate: -4 },
+    { src: "assets/cards/sports/109-soccer-card.jpg", x: 865, y: 34, rotate: 6 }
+  ];
+  const composites = [];
+
+  for (const item of cardItems) {
+    const input = await sharp(path.join(siteDir, item.src))
+      .resize({ width: 235 })
+      .ensureAlpha()
+      .rotate(item.rotate, { background: { r: 255, g: 248, b: 231, alpha: 0 } })
+      .png()
+      .toBuffer();
+    composites.push({ input, left: item.x, top: item.y });
+  }
+
+  await sharp(Buffer.from(ogBaseSvg()))
+    .composite(composites)
+    .jpeg({ quality: 90, mozjpeg: true })
+    .toFile(path.join(siteDir, "og-image.jpg"));
 }
 
 async function main() {
@@ -54,9 +66,7 @@ async function main() {
     .png()
     .toFile(path.join(siteDir, "apple-touch-icon.png"));
 
-  await sharp(Buffer.from(ogSvg()))
-    .jpeg({ quality: 86, mozjpeg: true })
-    .toFile(path.join(siteDir, "og-image.jpg"));
+  await generateOpenGraphImage();
 
   console.log("Generated favicon and Open Graph image assets.");
 }
